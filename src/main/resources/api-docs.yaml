@@ -1,0 +1,90 @@
+openapi: 3.0.1
+info:
+  title: MCX hello example service
+  description: Hello example REST service
+servers:
+  - url: http://localhost:8888
+    description: Generated server url
+tags:
+  - name: helloService
+    description: Пример реализации REST сервиса
+paths:
+  /hello/{entityId}:
+    delete:
+      tags:
+        - helloService
+      summary: Удаление сущности
+      operationId: deleteTemplate
+      parameters:
+        - name: entityId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "500":
+          description: внутренняя ошибка сервера
+        "404":
+          description: строка не найдена
+          content:
+            application/json: {}
+        "400":
+          description: неверный формат запроса
+        "200":
+          description: успешная операция
+  /hello:
+    get:
+      tags:
+        - helloService
+      summary: Получение списка сущностей
+      operationId: getEntities
+      responses:
+        "200":
+          description: успешная операция
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StringEntity'
+    post:
+      tags:
+        - helloService
+      summary: Создание сущности
+      operationId: createEntity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        "500":
+          description: внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringEntity'
+        "400":
+          description: неверный формат запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringEntity'
+        "200":
+          description: успешная операция
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringEntity'
+components:
+  schemas:
+    StringEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        string:
+          type: string
