@@ -1,19 +1,11 @@
-# Hello-service
-MCX hello example service
-> Default server port - 8888
+# Stident-service
+Default server port - 8080
 
-#### Build docker image:
-    docker build -t example/hello-service:latest .
-#### Docker run environment variables
-    - DB_HOST - database host (default = localhost)
-    - DB_PORT - database post (default = 5432)
-    - DB_NAME - database name (default = postgres)
-    - DB_SSL_MODE - postgresql sslmode parameter value (default = require) 
-    - DB_USERNAME - database user name (default = postgres)
-    - DB_USERPASS - detabase user password (default = mysecretpassword)
+#### Build mvn:
+    mvn spring-boot:run
     
 #### Swagger UI: 
-    http://localhost:8888/swagger-ui.html
+    http://localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#/
 #### OpenApi v3 docs file:
-    http://localhost:8888/v3/api-docs
-    http://localhost:8888/v3/api-docs.yaml     
+    http://localhost:8080/v3/api-docs
+    http://localhost:8080/v3/api-docs.yaml     

@@ -3,8 +3,7 @@ package ru.nstu.students.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import ru.nstu.students.exception.HelloEntityNotFoundException;
-import ru.nstu.students.exception.HelloServiceException;
+import ru.nstu.students.exception.StudentsServiceException;
 import ru.nstu.students.repository.StudentRepository;
 import ru.nstu.students.model.StudentEntity;
 
@@ -28,20 +27,15 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public StudentEntity createStringEntity(String string) throws HelloServiceException {
+    public StudentEntity createStringEntity(String string) throws StudentsServiceException {
         StudentEntity entity = new StudentEntity(string);
         logger.info("Entity created: " + entity);
         return repository.save(entity);
     }
 
     @Override
-    public void deleteStringEntity(UUID uuid) throws HelloServiceException {
-        if (repository.existsById(uuid)) {
-            repository.deleteById(uuid);
-            logger.info("Entity with uuid " + uuid + "deleted");
-            return;
-        }
-        throw new HelloEntityNotFoundException(uuid);
+    public void deleteStringEntity(UUID uuid) throws StudentsServiceException {
+
     }
 
     @Override

@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import ru.nstu.students.exception.HelloEntityNotFoundException;
 import ru.nstu.students.model.StudentEntity;
 import ru.nstu.students.service.StudentService;
 
@@ -19,17 +18,17 @@ import java.util.UUID;
 
 
 @RestController
-@RequestMapping("/hello")
-@Tag(name = "helloService", description = "Пример реализации REST сервиса")
-public class StudentController {
+@RequestMapping("/notes")
+@Tag(name = "studentService", description = "REST сервис для управления заметками студентов")
+public class NotesController {
 
     private final StudentService stringEntityService;
 
-    public StudentController(StudentService stringEntityService) {
+    public NotesController(StudentService stringEntityService) {
         this.stringEntityService = stringEntityService;
     }
 
-    @Operation(summary = "Получение списка сущностей")
+    @Operation(summary = "Получение списка заметок")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "успешная операция")})
     @GetMapping(produces = "application/json")
     @ResponseBody
@@ -38,7 +37,7 @@ public class StudentController {
     }
 
 
-    @Operation(summary = "Создание сущности")
+    @Operation(summary = "Создание заметки")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "успешная операция"),
             @ApiResponse(responseCode = "400", description = "неверный формат запроса"),
@@ -50,7 +49,7 @@ public class StudentController {
         return stringEntityService.createStringEntity(string);
     }
 
-    @Operation(summary = "Удаление сущности")
+    @Operation(summary = "Удаление заметки")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "успешная операция"),
             @ApiResponse(responseCode = "400", description = "неверный формат запроса"),
@@ -60,10 +59,6 @@ public class StudentController {
     @DeleteMapping(value = "/{entityId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteTemplate(@Validated @NotBlank @PathVariable UUID entityId) {
-        try {
             stringEntityService.deleteStringEntity(entityId);
-        } catch (HelloEntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
     }
 }

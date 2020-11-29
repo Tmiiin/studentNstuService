@@ -1,13 +1,13 @@
 openapi: 3.0.1
 info:
-  title: MCX hello example service
-  description: Hello example REST service
+  title: Student service
+  description: Service for NSTU mobile development
 servers:
-  - url: http://localhost:8888
+  - url: http://localhost:8080
     description: Generated server url
 tags:
-  - name: helloService
-    description: Пример реализации REST сервиса
+  - name: studentService
+    description: REST сервис
 paths:
   /hello/{entityId}:
     delete:

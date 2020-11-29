@@ -14,11 +14,6 @@ public class ScheduleOnDay {
 
     ArrayList<Lesson> lessons;
 
-    public ScheduleOnDay(String day, ArrayList<Lesson> lessons) {
-        this.day = day;
-        this.lessons = lessons;
-    }
-
     public ScheduleOnDay(String day) {
         this.day = day;
         lessons = new ArrayList<>();

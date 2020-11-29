@@ -21,15 +21,25 @@ public class ScheduleServiceImpl {
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduleServiceImpl.class);
 
+    @Value("${path.to.schedule.group}")
+    String scheduleGroupURL;
+
     @Value("${path.to.schedule}")
     String scheduleURL;
 
-    String cssQuery = "div.schedule__table-body";
+    String qGetSchedule = "div.schedule__table-body";
+    String qGetWeekNumber = "span.schedule__title-label";
 
-    public void getSchedule(String groupName) throws IOException {
-        Document doc = Jsoup.connect(scheduleURL + "?group=АА-06").get();
+    public String getNumberOfWeek() throws IOException {
+        Document doc = Jsoup.connect(scheduleURL).get();
+        Element weekNumber = doc.select(qGetWeekNumber).first();
+        return weekNumber.data();
+    }
+
+    public List<ScheduleOnDay> getSchedule(String groupName) throws IOException {
+        Document doc = Jsoup.connect(scheduleGroupURL + groupName).get();
         List<ScheduleOnDay> schedule = new ArrayList<>();
-        Element listDays = doc.select(cssQuery).first();
+        Element listDays = doc.select(qGetSchedule).first();
         Elements el = listDays.children();
         ScheduleOnDay scheduleOnDay;
         for (Element day : el) {//обрабатываем пары на каждый день из html в entity
@@ -37,19 +47,16 @@ public class ScheduleServiceImpl {
             scheduleOnDay = new ScheduleOnDay(dayName);
             for (Element lessons2 : day.children().get(1).children()) {//по порядку получаем пары
                 if (lessons2.children() != null) { //если пары есть
-                    Lesson.Builder lessonBuilder = Lesson.builder();
-                    String time = lessons2.select("div.schedule__table-time").text();
-                    //рассматривает вариант четной/нечетной пары
+                     //рассматривает вариант четной/нечетной пары
                     for (Element lessons : lessons2.children().get(1).children()) { //get(0) - получает "пн"
-                        int lessonNameLength = 0; //длина лишних слов в строке
-                        int additionalLength = 0; //дополнительные пробелы
-                        int parityLength = 0; //если есть (!)ЧЕТНОСТЬ то она будет впереди рушить красоту
+                        Lesson.Builder lessonBuilder = Lesson.builder();
+                        String time = lessons2.select("div.schedule__table-time").text();
+                        ArrayList<String> foolStrings = new ArrayList<>();
                         String lessonName = lessons.select("div.schedule__table-item").text();
 
                         if (!lessonName.isEmpty()) {
                             String auditory = lessons.select("div.schedule__table-class").text();
                             String parity = lessons.select("span.schedule__table-label").text();
-                            lessonNameLength += auditory.length();
                             lessonBuilder.setAuditory(auditory)
                                     .setParity(parity)
                                     .setTime(time);
@@ -62,21 +69,12 @@ public class ScheduleServiceImpl {
                                             .setTeacherName(teacher.text())
                                             .build();
                                     lessonBuilder.addTeacherInfo(teacherInfo);
-                                    logger.info("TeacherInfo: " + teacherInfo);
-                                    lessonNameLength += teacher.text().length();
-                                    additionalLength++;
+                                    foolStrings.add(teacher.text());
                                 }
                             }
-                            if (additionalLength > 0) additionalLength += 3; //если преподаватели были, то чтобы
-                            //правильно обрезать строку, придется добавить дополнительный пробел между ними и аудиторией
-                            //+ каждое название пары заканчивается точкой и пробелом перед ним -> обрезаем
-                            if (!parity.isEmpty())
-                                parityLength = parity.length() + 1;
-                            //из-за невозможности использовать css-селекторы и нежелания парсить руками, читаем весь
-                            // текст из тега div и обрезаем лишние значения
-                            lessonName = lessonName.substring(parityLength, lessonName.length() - lessonNameLength
-                                    - additionalLength);
-                            lessonBuilder.setLessonName(lessonName);
+                            foolStrings.add(parity);
+                            foolStrings.add(auditory);
+                            lessonBuilder.setLessonName(deleteFoolString(lessonName, foolStrings));
                             scheduleOnDay.addLesson(lessonBuilder.build());
                         }
                     }
@@ -84,6 +82,18 @@ public class ScheduleServiceImpl {
             }
             schedule.add(scheduleOnDay);
         }
-        logger.info("Что же мы увидим в дебагере...");
+        logger.info(schedule.toString());
+        return schedule;
     }
+
+    private String deleteFoolString(String lessonName, ArrayList<String> foolStrings) {
+        for (String foolString : foolStrings)
+            lessonName = lessonName.replace(foolString, "");
+        //на конце в html странная точка с пробелом
+        //а между именами преподавателей ставится запятая
+        lessonName = lessonName.replace(",","");
+        lessonName = lessonName.replace("·","");
+        return lessonName.trim();
+    }
+
 }
