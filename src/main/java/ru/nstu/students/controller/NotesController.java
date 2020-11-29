@@ -16,10 +16,9 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.UUID;
 
-
 @RestController
 @RequestMapping("/notes")
-@Tag(name = "studentService", description = "REST сервис для управления заметками студентов")
+@Tag(name = "notesService", description = "Сервис для управления заметками студентов")
 public class NotesController {
 
     private final StudentService stringEntityService;
@@ -59,6 +58,6 @@ public class NotesController {
     @DeleteMapping(value = "/{entityId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteTemplate(@Validated @NotBlank @PathVariable UUID entityId) {
-            stringEntityService.deleteStringEntity(entityId);
+        stringEntityService.deleteStringEntity(entityId);
     }
 }
