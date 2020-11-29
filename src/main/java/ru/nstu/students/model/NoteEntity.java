@@ -2,7 +2,7 @@ package ru.nstu.students.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -27,5 +27,7 @@ public class NoteEntity {
     private LocalDate date; //дата создания заметки
 
     @Column
-    private String group; //как область видимости заметки
+    @Length(max = 10)
+    private String note_group; //как область видимости заметки
+
 }

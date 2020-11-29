@@ -42,7 +42,7 @@ public class ScheduleController {
 
     @Operation(summary = "Получение номера текущей недели")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "успешная операция")})
-    @GetMapping(produces = "application/json")
+    @GetMapping(produces = "application/json", value = "/getWeek")
     @ResponseBody
     public ResponseEntity<String> getWeekNumber() {
         try {
