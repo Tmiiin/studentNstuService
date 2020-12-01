@@ -57,7 +57,7 @@ public class ScheduleController {
             description = "Возвращает список групп, для которых доступно получение расписания")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "успешная операция"),
             @ApiResponse(responseCode = "502", description = "ошибка при обработке веб-страницы")})
-    @GetMapping(produces = "application/json")
+    @GetMapping(produces = "application/json",  value = "/getGroups")
     @ResponseBody
     public ResponseEntity<ServerResponse> getGroupList() {
         try {
