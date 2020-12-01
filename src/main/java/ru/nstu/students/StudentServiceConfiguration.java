@@ -11,8 +11,9 @@ public class StudentServiceConfiguration {
 
     @Bean
     public OpenAPI customOpenAPI() {
-        return new OpenAPI().components(new Components()).info(new Info().title("NSTU mobile")
-                .description("NSTU mobile develop service"));
+        return new OpenAPI().components(new Components())
+                .info(new Info().title("NSTU mobile")
+                        .description("NSTU mobile develop service"));
     }
 
 }

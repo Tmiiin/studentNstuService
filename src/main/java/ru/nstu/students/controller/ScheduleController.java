@@ -9,11 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.nstu.students.exception.StringNotFoundException;
-import ru.nstu.students.model.scheduleModels.ScheduleOnDay;
+import ru.nstu.students.model.serverResponses.ServerResponse;
 import ru.nstu.students.service.ScheduleServiceImpl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/schedule")
@@ -26,29 +25,46 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
-    @Operation(summary = "Получение расписания по названию группы")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "успешная операция")})
+    @Operation(summary = "Получение расписания")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "успешная операция"),
+            @ApiResponse(responseCode = "502", description = "ошибка при обработке веб-страницы")})
     @GetMapping(produces = "application/json")
     @ResponseBody
-    public ResponseEntity<ArrayList<ScheduleOnDay>> getSchedule(@RequestParam String groupName) {
+    public ResponseEntity<ServerResponse> getSchedule(@RequestParam String groupName) {
         try {
-            return ResponseEntity.ok((ArrayList<ScheduleOnDay>) scheduleService.getSchedule(groupName));
-        } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.FOUND, e.getMessage());
-        } catch (StringNotFoundException i) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, i.getMessage());
+            if (groupName.length() < 3)
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Неверное название группы");
+            return ResponseEntity.ok(new ServerResponse(HttpStatus.OK, scheduleService.getSchedule(groupName)));
+        } catch (IOException | StringNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, e.getMessage());
         }
     }
 
     @Operation(summary = "Получение номера текущей недели")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "успешная операция")})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "успешная операция"),
+            @ApiResponse(responseCode = "502", description = "ошибка при обработке веб-страницы")})
     @GetMapping(produces = "application/json", value = "/getWeek")
     @ResponseBody
-    public ResponseEntity<String> getWeekNumber() {
+    public ResponseEntity<ServerResponse> getWeekNumber() {
         try {
-            return ResponseEntity.ok(scheduleService.getNumberOfWeek());
-        } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.FOUND, "(( грусна");
+            return ResponseEntity.ok(new ServerResponse(HttpStatus.OK, scheduleService.getNumberOfWeek()));
+        } catch (IOException | StringNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Получение названий групп",
+            description = "Возвращает список групп, для которых доступно получение расписания")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "успешная операция"),
+            @ApiResponse(responseCode = "502", description = "ошибка при обработке веб-страницы")})
+    @GetMapping(produces = "application/json")
+    @ResponseBody
+    public ResponseEntity<ServerResponse> getGroupList() {
+        try {
+            return ResponseEntity.ok(new ServerResponse(HttpStatus.OK,
+                    "Not implemented yet"/*scheduleService.getGroupNames()*/));
+        } catch (/*IOException*/Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, e.getMessage());
         }
     }
 
