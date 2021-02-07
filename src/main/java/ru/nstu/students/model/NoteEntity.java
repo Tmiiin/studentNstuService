@@ -2,12 +2,9 @@ package ru.nstu.students.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
 import ru.nstu.students.model.enums.NoteGroup;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -39,33 +36,33 @@ public class NoteEntity {
         return new NoteEntity().new Builder();
     }
 
-    public class Builder{
+    public class Builder {
 
-        private Builder(){
+        private Builder() {
             NoteEntity.this.date = LocalDateTime.now();
         }
 
-        public Builder setNoteGroup(NoteGroup noteGroup){
+        public Builder setNoteGroup(NoteGroup noteGroup) {
             NoteEntity.this.noteGroup = noteGroup;
             return this;
         }
 
-        public Builder setNoteText(String noteText){
+        public Builder setNoteText(String noteText) {
             NoteEntity.this.noteText = noteText;
             return this;
         }
 
-        public Builder setAuthorName(String authorName){
+        public Builder setAuthorName(String authorName) {
             NoteEntity.this.authorName = authorName;
             return this;
         }
 
-        public Builder setAuthorId(UUID id){
+        public Builder setAuthorId(UUID id) {
             NoteEntity.this.authorId = id;
             return this;
         }
 
-        public NoteEntity build(){
+        public NoteEntity build() {
             return NoteEntity.this;
         }
     }

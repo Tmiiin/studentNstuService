@@ -12,7 +12,7 @@ public class ScheduleOnDay {
 
     String day;
 
-    ArrayList<Lesson> lessons;
+    ArrayList<Lesson> lessons = new ArrayList<>();
 
     public ScheduleOnDay(String day) {
         this.day = day;

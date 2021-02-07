@@ -8,8 +8,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class TeacherInfo {
 
-    String teacherUrl;
-    String teacherName;
+    String teacherUrl = "";
+    String teacherName = "";
 
     private TeacherInfo() {
     }

@@ -9,10 +9,10 @@ import java.util.ArrayList;
 public class Lesson {
 
     ArrayList<TeacherInfo> teacherInfo;
-    String parity;
-    String time;
-    String auditory;
-    String lessonName;
+    String parity = "";
+    String time = "";
+    String auditory = "";
+    String lessonName = "";
 
     private Lesson() {
         this.teacherInfo = new ArrayList<>();
